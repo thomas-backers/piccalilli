@@ -1,5 +1,6 @@
-import { post, type Answer, type Errors } from "../api";
+import { post } from "@/modules/api";
 import { defineStore } from "pinia";
+import type { Answer, Errors } from "shared/types";
 import { ref } from "vue";
 
 export interface SignUpForm {

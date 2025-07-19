@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import type { Errors } from "../../modules/api";
-import { useUserStore, type SignUpForm } from "../../modules/store/user";
+import { useUserStore, type SignUpForm } from "@/modules/store/user";
+import { storeToRefs } from "pinia";
+import type { Errors } from "shared/types";
+import { validate } from "shared/validation";
+import { signUpFormSchema } from "shared/validation/schemas/sign-up";
 import { reactive, ref } from "vue";
 
-const { loading, signUp } = useUserStore();
+const userStore = useUserStore();
+const { loading } = storeToRefs(userStore);
+const { signUp } = userStore;
 
 const form = reactive<SignUpForm>({
   username: "",
@@ -11,11 +16,22 @@ const form = reactive<SignUpForm>({
   password: "",
   confirmPassword: "",
 });
-
+const validating = ref<boolean>(false);
 const errors = ref<Errors>({});
 
 const onSubmit = async (): Promise<void> => {
-  errors.value = await signUp(form);
+  validating.value = true;
+  const {
+    success,
+    data,
+    errors: validationErrors,
+  } = await validate(signUpFormSchema, form);
+  validating.value = false;
+  if (!success) {
+    errors.value = validationErrors;
+    return;
+  }
+  errors.value = await signUp(data);
 };
 </script>
 
@@ -29,6 +45,6 @@ const onSubmit = async (): Promise<void> => {
         </li>
       </ul>
     </label>
-    <button :disabled="loading" type="submit">sign up</button>
+    <button :disabled="loading || validating" type="submit">sign up</button>
   </form>
 </template>

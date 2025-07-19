@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "client:add": "pnpm --filter client add",
-    "client:dev": "pnpm --filter client run dev"
+    "client:dev": "pnpm --filter client run dev",
+    "shared:add": "pnpm --filter shared add"
   },
   "keywords": [],
   "author": "",

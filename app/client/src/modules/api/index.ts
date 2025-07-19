@@ -1,12 +1,5 @@
 import axios, { type AxiosResponse } from "axios";
-
-export type Errors = Record<string, string[]>;
-
-export interface Answer<Payload extends object> {
-  errors: Errors;
-  message: string;
-  payload: Payload;
-}
+import type { Answer } from "shared/types";
 
 const api = axios.create();
 
@@ -26,7 +19,7 @@ export const post = async <Payload extends object, Data extends object>(
   } catch (error: unknown) {
     return {
       errors: {
-        global: ["Disconnected from the server."],
+        global: ["Disconnected from the server"],
       },
       message: "An error occurred while processing your request",
       payload: {} as Payload,
