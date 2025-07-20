@@ -6,10 +6,14 @@
   "scripts": {
     "client:add": "pnpm --filter client add",
     "client:dev": "pnpm --filter client run dev",
+    "client:install": "pnpm --filter client install",
+    "server:add": "pnpm --filter server add",
+    "server:dev": "pnpm --filter server run dev",
+    "server:install": "pnpm --filter server install",
     "shared:add": "pnpm --filter shared add"
   },
   "keywords": [],
-  "author": "",
+  "author": "Thomas Backers",
   "license": "ISC",
   "packageManager": "pnpm@10.13.1"
 }

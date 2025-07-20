@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Input from "@/views/components/Input.vue";
 import { useUserStore, type SignUpForm } from "@/modules/store/user";
+import Input from "@/views/components/Input.vue";
 import { storeToRefs } from "pinia";
 import type { Errors } from "shared/types";
 import { validateAsync, validateSync } from "shared/validation";
