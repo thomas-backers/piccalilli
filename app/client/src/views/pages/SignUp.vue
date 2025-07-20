@@ -37,7 +37,7 @@ const onSubmit = async (): Promise<void> => {
 
 const onInput = (name: string): void => {
   if (!(name in form)) {
-    console.warn(`Key "${name}" does not exist in form.`);
+    console.warn(`Key "${name}" does not exist in form`);
     return;
   }
   const fieldSchema = signUpFormSchema.pick({ [name]: true });
@@ -61,6 +61,38 @@ const onInput = (name: string): void => {
       type="text"
       @input="onInput"
     />
+    <Input
+      v-model="form.email"
+      :errors="errors.email"
+      label="Email:"
+      name="email"
+      placeholder="Type your email"
+      type="email"
+      @input="onInput"
+    />
+    <Input
+      v-model="form.password"
+      :errors="errors.password"
+      label="Password:"
+      name="password"
+      placeholder="Type your password"
+      type="password"
+      @input="onInput"
+    />
+    <Input
+      v-model="form.confirmPassword"
+      :errors="errors.confirmPassword"
+      label="Password confirmation:"
+      name="confirmPassword"
+      placeholder="Confirm your password"
+      type="password"
+      @input="onInput"
+    />
     <button :disabled="loading || validating" type="submit">sign up</button>
+    <ul v-if="errors.global">
+      <li v-for="(error, i) of errors.global" :key="i">
+        {{ error }}
+      </li>
+    </ul>
   </form>
 </template>
