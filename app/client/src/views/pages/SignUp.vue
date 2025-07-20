@@ -36,6 +36,10 @@ const onSubmit = async (): Promise<void> => {
 };
 
 const onInput = (name: string): void => {
+  if (!(name in form)) {
+    console.warn(`Key "${name}" does not exist in form.`);
+    return;
+  }
   const fieldSchema = signUpFormSchema.pick({ [name]: true });
   const { success, errors: validationErrors } = validateSync(fieldSchema, form);
   if (!success) {
