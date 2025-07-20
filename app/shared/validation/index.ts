@@ -13,15 +13,10 @@ export interface ValidationFailure {
   errors: Errors;
 }
 
-export const validate = async <ValidData>(
-  schema: z.ZodType<ValidData>,
-  data: unknown
-): Promise<ValidationSuccess<ValidData> | ValidationFailure> => {
-  const {
-    success,
-    data: parsedData,
-    error,
-  } = await schema.safeParseAsync(data);
+const formatValidationResult = <ValidData>(
+  result: z.ZodSafeParseResult<ValidData>
+): ValidationSuccess<ValidData> | ValidationFailure => {
+  const { success, data, error } = result;
   if (!success) {
     const errors: Errors = {};
     for (const { path, message } of error.issues) {
@@ -31,7 +26,21 @@ export const validate = async <ValidData>(
     }
     return { success, errors };
   }
-  return { success, data: parsedData };
+  return { success, data };
+};
+
+export const validateSync = <ValidData>(
+  schema: z.ZodType<ValidData>,
+  data: unknown
+): ValidationSuccess<ValidData> | ValidationFailure => {
+  return formatValidationResult(schema.safeParse(data));
+};
+
+export const validateAsync = async <ValidData>(
+  schema: z.ZodType<ValidData>,
+  data: unknown
+): Promise<ValidationSuccess<ValidData> | ValidationFailure> => {
+  return formatValidationResult(await schema.safeParseAsync(data));
 };
 
 export default z;

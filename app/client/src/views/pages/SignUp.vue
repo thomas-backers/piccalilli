@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import Input from "@/views/components/Input.vue";
 import { useUserStore, type SignUpForm } from "@/modules/store/user";
 import { storeToRefs } from "pinia";
 import type { Errors } from "shared/types";
-import { validate } from "shared/validation";
+import { validateAsync, validateSync } from "shared/validation";
 import { signUpFormSchema } from "shared/validation/schemas/sign-up";
 import { reactive, ref } from "vue";
 
@@ -25,7 +26,7 @@ const onSubmit = async (): Promise<void> => {
     success,
     data,
     errors: validationErrors,
-  } = await validate(signUpFormSchema, form);
+  } = await validateAsync(signUpFormSchema, form);
   validating.value = false;
   if (!success) {
     errors.value = validationErrors;
@@ -33,18 +34,29 @@ const onSubmit = async (): Promise<void> => {
   }
   errors.value = await signUp(data);
 };
+
+const onInput = (name: string): void => {
+  const fieldSchema = signUpFormSchema.pick({ [name]: true });
+  const { success, errors: validationErrors } = validateSync(fieldSchema, form);
+  if (!success) {
+    errors.value[name] = validationErrors[name];
+    return;
+  }
+  delete errors.value[name];
+};
 </script>
 
 <template>
   <form @submit.prevent="onSubmit">
-    <label for="username">
-      <input v-model="form.username" id="username" type="text" />
-      <ul v-if="errors.username">
-        <li v-for="(error, i) in errors.username" :key="i">
-          {{ error }}
-        </li>
-      </ul>
-    </label>
+    <Input
+      v-model="form.username"
+      :errors="errors.username"
+      label="Username:"
+      name="username"
+      placeholder="Type your username"
+      type="text"
+      @input="onInput"
+    />
     <button :disabled="loading || validating" type="submit">sign up</button>
   </form>
 </template>
