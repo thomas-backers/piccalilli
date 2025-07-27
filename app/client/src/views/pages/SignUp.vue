@@ -6,9 +6,6 @@ import Input from "@/views/components/Input.vue";
 import { useForm } from "@/views/composables/form";
 import { storeToRefs } from "pinia";
 import { signUpFormSchema } from "shared/validation/schemas/sign-up";
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
 
 const userStore = useUserStore();
 const { loading } = storeToRefs(userStore);
@@ -78,7 +75,9 @@ const onInput = (name: string): void => {
       <Button :disabled="loading || validating" type="submit">sign up</Button>
     </template>
     <template #redirections>
-      <a href="/sign-in">I already have an account</a>
+      <RouterLink :to="{ name: 'SignIn' }">
+        I already have an account
+      </RouterLink>
     </template>
   </Form>
 </template>

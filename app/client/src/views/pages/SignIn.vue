@@ -55,7 +55,9 @@ const onInput = (name: string): void => {
       <Button :disabled="loading || validating" type="submit">sign in</Button>
     </template>
     <template #redirections>
-      <a href="/sign-up">I want to create an account</a>
+      <RouterLink :to="{ name: 'SignUp' }">
+        I want to create an account
+      </RouterLink>
     </template>
   </Form>
 </template>
