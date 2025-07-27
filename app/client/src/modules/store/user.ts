@@ -20,11 +20,11 @@ export const useUserStore = defineStore("user", () => {
   const loading = ref<boolean>(false);
   const user = ref<User | undefined>();
 
-  const signUp = async (data: SignUpForm): Promise<Errors> => {
+  const signUp = async (form: SignUpForm): Promise<Errors> => {
     loading.value = true;
     const { errors, message }: Answer<SignUpPayload> = await post(
       "/auth/sign-up",
-      data
+      form
     );
     console.log(message);
     loading.value = false;

@@ -4,34 +4,36 @@ import { ref } from "vue";
 
 export const useForm = <Schema extends z.ZodObject>(
   defaultForm: z.infer<Schema>,
-  schema: Schema
+  schema: Schema,
+  submitAction: (form: z.infer<Schema>) => Promise<Errors>
 ) => {
   const form = ref<z.infer<Schema>>(defaultForm);
   const errors = ref<Errors>({});
   const validating = ref<boolean>(false);
 
-  const validateField = (field: string): void => {
-    if (!(field in form.value)) {
+  const validateField = (field: string): boolean => {
+    if (!(field in form)) {
       console.warn(`Key "${field}" does not exist in form`);
-      return;
+      return false;
     }
     const fieldSchema = schema.pick({ [field]: true });
     const { success, errors: validationErrors } = validateSync(
       fieldSchema,
-      form.value
+      form
     );
     if (!success) {
       errors.value[field] = validationErrors[field];
-      return;
+      return false;
     }
     delete errors.value[field];
+    return true;
   };
 
   const validateForm = async (): Promise<boolean> => {
     validating.value = true;
     const { success, errors: validationErrors } = await validateAsync(
       schema,
-      form.value
+      form
     );
     validating.value = false;
     if (!success) {
@@ -40,5 +42,13 @@ export const useForm = <Schema extends z.ZodObject>(
     return success;
   };
 
-  return { form, errors, validating, validateField, validateForm };
+  const submitForm = async (): Promise<void> => {
+    const success: boolean = await validateForm();
+    if (!success) {
+      return;
+    }
+    errors.value = await submitAction(form.value);
+  };
+
+  return { form, errors, validating, validateField, validateForm, submitForm };
 };

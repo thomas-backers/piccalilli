@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/modules/store/user";
+import Button from "@/views/components/Button.vue";
 import Form from "@/views/components/Form.vue";
 import Input from "@/views/components/Input.vue";
 import { useForm } from "@/views/composables/form";
@@ -13,22 +14,19 @@ const userStore = useUserStore();
 const { loading } = storeToRefs(userStore);
 const { signUp } = userStore;
 
-const { form, errors, validating, validateField, validateForm } = useForm(
+const { form, errors, validating, validateField, submitForm } = useForm(
   {
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   },
-  signUpFormSchema
+  signUpFormSchema,
+  signUp
 );
 
 const onSubmit = async (): Promise<void> => {
-  const success: boolean = await validateForm();
-  if (!success) {
-    return;
-  }
-  errors.value = await signUp(form.value);
+  await submitForm();
 };
 
 const onInput = (name: string): void => {
@@ -37,7 +35,7 @@ const onInput = (name: string): void => {
 </script>
 
 <template>
-  <Form @submit="onSubmit">
+  <Form :errors="errors.global" @submit="onSubmit">
     <template #inputs>
       <Input
         v-model="form.username"
@@ -77,15 +75,10 @@ const onInput = (name: string): void => {
       />
     </template>
     <template #actions>
-      <button :disabled="loading || validating" type="submit">sign up</button>
+      <Button :disabled="loading || validating" type="submit">sign up</Button>
     </template>
     <template #redirections>
       <a href="/sign-in">I already have an account</a>
     </template>
-    <ul v-if="errors.global">
-      <li v-for="(error, i) of errors.global" :key="i">
-        {{ error }}
-      </li>
-    </ul>
   </Form>
 </template>
