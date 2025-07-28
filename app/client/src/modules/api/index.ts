@@ -21,7 +21,7 @@ export const post = async <Payload extends object, Data extends object>(
       errors: {
         global: ["Disconnected from the server"],
       },
-      message: "An error occurred while processing the request",
+      message: "Cannot send request",
       payload: {} as Payload,
     };
   }

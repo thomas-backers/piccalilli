@@ -5,7 +5,7 @@ export const internalServerError = (response: Response): void => {
   failure(
     response,
     500,
-    { global: ["The server failed to process your request"] },
+    { global: ["The server failed to process the request"] },
     "Something went wrong"
   );
 };
