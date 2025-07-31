@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 
-const post = async (req: Request, res: Response): Promise<void> => {};
+const post = async (request: Request, response: Response): Promise<void> => {
+  //
+};
 
 export default post;
