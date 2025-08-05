@@ -1,14 +1,18 @@
 import { ok } from "@/api/helper/status/success";
+import type { User } from "@/modules/database/schemas/users";
+import { createUser } from "@/modules/database/tables/users";
 import bcrypt from "bcryptjs";
 import type { Request, Response } from "express";
 import { SignUpForm } from "shared/validation/schemas/sign-up";
 
 const post = async (request: Request, response: Response): Promise<void> => {
-  const { username, password }: SignUpForm = request.body;
+  const { username, email, password }: SignUpForm = request.body;
   const passwordHash: string = await bcrypt.hash(password, 12);
+  const user: User = await createUser(username, email, passwordHash);
   return ok(response, "", {
-    username,
-    verified: false,
+    username: user.username,
+    email: user.email,
+    verified: user.verifiedAt !== null,
   });
 };
 
