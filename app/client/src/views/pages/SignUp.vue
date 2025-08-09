@@ -8,7 +8,7 @@ import { storeToRefs } from "pinia";
 import { signUpFormSchema } from "shared/validation/schemas/sign-up";
 
 const userStore = useUserStore();
-const { loading } = storeToRefs(userStore);
+const { loading, user } = storeToRefs(userStore);
 const { signUp } = userStore;
 
 const { form, errors, validating, validateField, submitForm } = useForm(
@@ -24,6 +24,9 @@ const { form, errors, validating, validateField, submitForm } = useForm(
 
 const onSubmit = async (): Promise<void> => {
   await submitForm();
+  if (user.value) {
+    window.location.href = "/";
+  }
 };
 
 const onInput = (name: string): void => {
