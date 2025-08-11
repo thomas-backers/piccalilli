@@ -12,14 +12,14 @@ export const useForm = <Schema extends z.ZodObject>(
   const validating = ref<boolean>(false);
 
   const validateField = (field: string): boolean => {
-    if (!(field in form)) {
+    if (!(field in form.value)) {
       console.warn(`Key "${field}" does not exist in form`);
       return false;
     }
     const fieldSchema = schema.pick({ [field]: true });
     const { success, errors: validationErrors } = validateSync(
       fieldSchema,
-      form
+      form.value
     );
     if (!success) {
       errors.value[field] = validationErrors[field];
