@@ -6,10 +6,13 @@ import Input from "@/views/components/Input.vue";
 import { useForm } from "@/views/composables/form";
 import { storeToRefs } from "pinia";
 import { signUpFormSchema } from "shared/validation/schemas/sign-up";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
 const { loading, user } = storeToRefs(userStore);
 const { signUp } = userStore;
+
+const router = useRouter();
 
 const { form, errors, validating, validateField, submitForm } = useForm(
   {
@@ -25,7 +28,7 @@ const { form, errors, validating, validateField, submitForm } = useForm(
 const onSubmit = async (): Promise<void> => {
   await submitForm();
   if (user.value) {
-    window.location.href = "/";
+    await router.push({ name: "Home" });
   }
 };
 
